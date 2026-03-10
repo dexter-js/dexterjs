@@ -20,4 +20,4 @@ export type {
   DexterConfig,
   EventEnvelope,
   EventBatch,
-} from "@dexterjs/types";
+} from "@dexter.js/types";

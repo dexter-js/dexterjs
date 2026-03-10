@@ -10,7 +10,7 @@ import { getEmitter } from "../init";
  * @example
  * ```ts
  * import mongoose from "mongoose";
- * import { instrumentMongoose } from "@dexterjs/sdk";
+ * import { instrumentMongoose } from "@dexter.js/sdk";
  * instrumentMongoose(mongoose);
  * ```
  *

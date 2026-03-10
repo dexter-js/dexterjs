@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { SocketEmitter } from "@dexterjs/sdk/emitter";
-import type { EventEnvelope } from "@dexterjs/types";
+import { SocketEmitter } from "@dexter.js/sdk/emitter";
+import type { EventEnvelope } from "@dexter.js/types";
 
 describe("SDK — SocketEmitter", () => {
   let emitter: SocketEmitter;

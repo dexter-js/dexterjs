@@ -11,7 +11,7 @@ import { getEmitter } from "../init";
  * Usage:
  * ```ts
  * import express from "express";
- * import { expressMiddleware } from "@dexterjs/sdk";
+ * import { expressMiddleware } from "@dexter.js/sdk";
  * const app = express();
  * app.use(expressMiddleware());
  * ```

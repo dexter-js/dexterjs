@@ -1,4 +1,4 @@
-import type { LogLevel } from "@dexterjs/types";
+import type { LogLevel } from "@dexter.js/types";
 import { currentTraceId } from "../context";
 import { SocketEmitter } from "../emitter";
 

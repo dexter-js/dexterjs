@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import Database from "better-sqlite3";
-import type { EventBatch } from "@dexterjs/types";
+import type { EventBatch } from "@dexter.js/types";
 import * as fs from "node:fs";
 import * as path from "node:path";
 

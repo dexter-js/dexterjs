@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { SocketEmitter } from "@dexterjs/sdk/emitter";
-import { traceStore } from "@dexterjs/sdk/context";
+import { SocketEmitter } from "@dexter.js/sdk/emitter";
+import { traceStore } from "@dexter.js/sdk/context";
 
 // Mock init module to expose a controlled emitter for the pg instrumentor.
 let mockEmitter: SocketEmitter;
 let emitSpy: ReturnType<typeof vi.spyOn>;
 
-vi.mock("@dexterjs/sdk/init", () => ({
+vi.mock("@dexter.js/sdk/init", () => ({
   getEmitter: () => mockEmitter,
 }));
 
-import { instrumentPg } from "@dexterjs/sdk/instrumentors/pg";
+import { instrumentPg } from "@dexter.js/sdk/instrumentors/pg";
 
 describe("SDK — pg instrumentor", () => {
   beforeEach(() => {

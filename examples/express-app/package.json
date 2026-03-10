@@ -1,5 +1,5 @@
 {
-  "name": "@dexterjs/example-express",
+  "name": "@dexter.js/example-express",
   "version": "0.1.0",
   "private": true,
   "description": "Example Express app instrumented with DexterJS",
@@ -12,8 +12,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@dexterjs/sdk": "workspace:*",
-    "@dexterjs/types": "workspace:*",
+    "@dexter.js/sdk": "workspace:*",
+    "@dexter.js/types": "workspace:*",
     "express": "^4.19.0",
     "pg": "^8.12.0"
   },

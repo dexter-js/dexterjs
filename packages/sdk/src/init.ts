@@ -1,7 +1,7 @@
 import { spawn, type ChildProcess } from "node:child_process";
 import * as path from "node:path";
 import * as fs from "node:fs";
-import type { DexterConfig } from "@dexterjs/types";
+import type { DexterConfig } from "@dexter.js/types";
 import { SocketEmitter } from "./emitter";
 import { MetricsCollector } from "./collectors/metrics";
 

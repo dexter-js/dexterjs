@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { traceStore, currentTraceId } from "@dexterjs/sdk/context";
+import { traceStore, currentTraceId } from "@dexter.js/sdk/context";
 
 describe("SDK — context (AsyncLocalStorage traceId)", () => {
   it("returns 'unknown' when no async context is active", () => {

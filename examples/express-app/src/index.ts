@@ -7,7 +7,7 @@ import {
   expressMiddleware,
   instrumentPg,
   LogCollector,
-} from "@dexterjs/sdk";
+} from "@dexter.js/sdk";
 
 const emitter = init({
   port: 4000,

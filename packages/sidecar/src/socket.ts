@@ -1,6 +1,6 @@
 import * as net from "node:net";
 import * as fs from "node:fs";
-import type { EventBatch } from "@dexterjs/types";
+import type { EventBatch } from "@dexter.js/types";
 import { ingestBatch } from "./ingest";
 
 const SOCKET_PATH = "/tmp/dexter.sock";

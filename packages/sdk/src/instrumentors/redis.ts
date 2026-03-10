@@ -11,7 +11,7 @@ import { getEmitter } from "../init";
  * @example
  * ```ts
  * import Redis from "ioredis";
- * import { instrumentRedis } from "@dexterjs/sdk";
+ * import { instrumentRedis } from "@dexter.js/sdk";
  * const redis = new Redis();
  * instrumentRedis(redis);
  * ```

@@ -12,7 +12,7 @@ import { getEmitter } from "../init";
  * @example
  * ```ts
  * import axios from "axios";
- * import { instrumentHttp } from "@dexterjs/sdk";
+ * import { instrumentHttp } from "@dexter.js/sdk";
  * instrumentHttp({ axios });
  * ```
  *

@@ -7,9 +7,9 @@ import type {
   DexterConfig,
   EventEnvelope,
   EventBatch,
-} from "@dexterjs/types";
+} from "@dexter.js/types";
 
-describe("@dexterjs/types", () => {
+describe("@dexter.js/types", () => {
   describe("TraceEvent", () => {
     it("should accept a valid trace event object", () => {
       const event: TraceEvent = {

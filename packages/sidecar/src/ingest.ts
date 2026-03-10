@@ -1,4 +1,4 @@
-import type { EventBatch, EventEnvelope } from "@dexterjs/types";
+import type { EventBatch, EventEnvelope } from "@dexter.js/types";
 import { getDb } from "./db";
 
 /**

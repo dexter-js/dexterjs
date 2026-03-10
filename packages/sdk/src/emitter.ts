@@ -1,5 +1,5 @@
 import * as net from "node:net";
-import type { EventBatch, EventEnvelope } from "@dexterjs/types";
+import type { EventBatch, EventEnvelope } from "@dexter.js/types";
 
 const SOCKET_PATH = "/tmp/dexter.sock";
 const FLUSH_INTERVAL_MS = 500;

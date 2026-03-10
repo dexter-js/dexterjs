@@ -9,9 +9,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@dexterjs/types": path.resolve(__dirname, "shared/types/src"),
-      "@dexterjs/sdk": path.resolve(__dirname, "packages/sdk/src"),
-      "@dexterjs/sidecar": path.resolve(__dirname, "packages/sidecar/src"),
+      "@dexter.js/types": path.resolve(__dirname, "shared/types/src"),
+      "@dexter.js/sdk": path.resolve(__dirname, "packages/sdk/src"),
+      "@dexter.js/sidecar": path.resolve(__dirname, "packages/sidecar/src"),
     },
   },
 });

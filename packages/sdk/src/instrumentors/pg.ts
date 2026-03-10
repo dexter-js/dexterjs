@@ -11,7 +11,7 @@ import { getEmitter } from "../init";
  * @example
  * ```ts
  * import { Client } from "pg";
- * import { instrumentPg } from "@dexterjs/sdk";
+ * import { instrumentPg } from "@dexter.js/sdk";
  * instrumentPg(Client);
  * ```
  *
