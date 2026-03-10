@@ -43,7 +43,7 @@ export class SidecarTransport implements Transport {
       events: batch.map((entry) => ({
         type: "log" as const,
         payload: {
-          traceId: (entry.context?.["traceId"] as string) ?? "unknown",
+          traceId: entry.traceId ?? (entry.context?.["traceId"] as string) ?? "unknown",
           level: entry.level,
           message: entry.message,
           metadata: entry.metadata,
