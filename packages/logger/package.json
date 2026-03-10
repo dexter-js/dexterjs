@@ -1,6 +1,6 @@
 {
   "name": "@dexter.js/logger",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Zero-dependency, production-grade structured logger for Node.js",
   "publishConfig": {
     "access": "public"
