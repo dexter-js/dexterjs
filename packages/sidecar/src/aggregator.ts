@@ -1,3 +1,4 @@
+// aggregator — route stats & insights engine
 import { getDb } from "./db";
 
 /** Percentile stats for a single route. */
