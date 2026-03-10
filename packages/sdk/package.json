@@ -1,7 +1,7 @@
 {
   "name": "@dexter.js/sdk",
   "version": "0.0.1",
-  "description": "DexterJS SDK — auto-instrument your Node.js app",
+  "description": "DexterJS SDK — meta package that re-exports @dexter.js/logger and @dexter.js/monitor",
   "publishConfig": {
     "access": "public"
   },
@@ -13,35 +13,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-  "@dexter.js/sidecar": "workspace:*",
-    "@dexter.js/types": "workspace:*"
+    "@dexter.js/logger": "workspace:*",
+    "@dexter.js/monitor": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
     "typescript": "^5.4.0"
-  },
-  "peerDependencies": {
-    "express": ">=4.0.0",
-    "pg": ">=8.0.0",
-    "mongoose": ">=7.0.0",
-    "ioredis": ">=5.0.0",
-    "axios": ">=1.0.0"
-  },
-  "peerDependenciesMeta": {
-    "express": {
-      "optional": true
-    },
-    "pg": {
-      "optional": true
-    },
-    "mongoose": {
-      "optional": true
-    },
-    "ioredis": {
-      "optional": true
-    },
-    "axios": {
-      "optional": true
-    }
   }
 }

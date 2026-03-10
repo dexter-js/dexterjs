@@ -1,23 +1,5 @@
-export { init, getEmitter } from "./init";
-export { SocketEmitter } from "./emitter";
-export { traceStore, currentTraceId } from "./context";
-export { LogCollector } from "./collectors/log";
-export { MetricsCollector } from "./collectors/metrics";
+// ─── @dexter.js/sdk ──────────────────────────────────────────────────────────
+// Meta package — re-exports everything from @dexter.js/logger and @dexter.js/monitor.
 
-// Instrumentors — import individually to register hooks.
-export { expressMiddleware } from "./instrumentors/express";
-export { instrumentPg } from "./instrumentors/pg";
-export { instrumentMongoose } from "./instrumentors/mongoose";
-export { instrumentRedis } from "./instrumentors/redis";
-export { instrumentHttp } from "./instrumentors/http";
-
-// Re-export shared types for consumer convenience.
-export type {
-  TraceEvent,
-  LogEvent,
-  SpanEvent,
-  MetricEvent,
-  DexterConfig,
-  EventEnvelope,
-  EventBatch,
-} from "@dexter.js/types";
+export * from "@dexter.js/logger";
+export * from "@dexter.js/monitor";
