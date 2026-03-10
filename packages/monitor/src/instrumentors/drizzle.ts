@@ -1,55 +1,73 @@
-import { currentTraceId } from "../context";
+import { currentTraceId } from "@dexter.js/types";
 import { getEmitter } from "../init";
 
 /**
- * Custom Drizzle logger that emits span events for every query.
- * Uses Drizzle's `logger` option which accepts an object with a `logQuery` method.
+ * Instruments a pg Pool for Drizzle by wrapping pool.query() directly.
+ * This gives accurate timing unlike Drizzle's logQuery which fires after execution.
  *
  * @example
  * ```ts
+ * import { Pool } from "pg";
  * import { drizzle } from "drizzle-orm/node-postgres";
- * import { dexterDrizzleLogger } from "@dexter.js/monitor";
+ * import { instrumentDrizzle } from "@dexter.js/monitor";
  *
- * const db = drizzle(pool, { logger: dexterDrizzleLogger });
+ * const pool = new Pool({ connectionString: DATABASE_URL });
+ * const db = drizzle(instrumentDrizzle(pool));
  * ```
  */
-export class DexterDrizzleLogger {
-  /**
-   * Called by Drizzle for every query execution.
-   * Captures query text, parameters (redacted), and timing.
-   */
-  logQuery(query: string, params: unknown[]): void {
+export function instrumentDrizzle(pool: any): any {
+  const originalQuery = pool.query.bind(pool);
+
+  pool.query = async function (...args: any[]) {
     const traceId = currentTraceId();
     const start = performance.now();
+    const query = typeof args[0] === 'string' ? args[0] : args[0]?.text ?? 'unknown'
 
-    // Redact parameter values to avoid leaking sensitive data.
-    const redactedParams = params.map((_p, i) => `$${i + 1}`);
-    const target = `drizzle: ${query.slice(0, 200)}`;
+    try {
+      const result = await originalQuery(...args);
+      const duration = performance.now() - start;
 
-    // Emit span immediately — Drizzle calls logQuery after execution.
-    const emitter = getEmitter();
-    if (!emitter) return;
+      const emitter = getEmitter();
+      if (emitter) {
+        emitter.emit({
+          type: "span",
+          payload: {
+            traceId,
+            type: "db",
+            target: `drizzle: ${query.slice(0, 200)}`,
+            duration,
+            timestamp: Date.now(),
+            error: undefined,
+          },
+        });
+      }
 
-    emitter.emit({
-      type: "span",
-      payload: {
-        traceId,
-        type: "db",
-        target,
-        duration: performance.now() - start,
-        timestamp: Date.now(),
-        error: undefined,
-      },
-    });
-
-    // Log query details for debugging.
-    if (process.env["DEXTER_DEBUG"]) {
-      console.debug(
-        `[dexter-drizzle] ${query.slice(0, 100)} params=[${redactedParams.join(", ")}]`,
-      );
+      return result;
+    } catch (err: any) {
+      const duration = performance.now() - start;
+      const emitter = getEmitter();
+      if (emitter) {
+        emitter.emit({
+          type: "span",
+          payload: {
+            traceId,
+            type: "db",
+            target: `drizzle: ${query.slice(0, 200)}`,
+            duration,
+            timestamp: Date.now(),
+            error: err.message || "unknown error",
+          },
+        });
+      }
+      throw err;
     }
-  }
+  };
+
+  return pool;
 }
 
-/** Pre-built instance ready to pass into Drizzle config. */
+// Keep DexterDrizzleLogger as a no-op for backward compat
+export class DexterDrizzleLogger {
+  logQuery(_query: string, _params: unknown[]): void {}
+}
 export const dexterDrizzleLogger = new DexterDrizzleLogger();
