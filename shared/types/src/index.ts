@@ -68,3 +68,5 @@ export interface EventBatch {
   events: EventEnvelope[];
   sentAt: number;
 }
+
+export { traceStore, currentTraceId } from "./context";
