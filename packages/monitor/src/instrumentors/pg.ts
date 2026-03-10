@@ -1,4 +1,4 @@
-import { currentTraceId } from "../context";
+import { currentTraceId } from "@dexter.js/types";
 import { getEmitter } from "../init";
 
 /**

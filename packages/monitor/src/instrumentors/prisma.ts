@@ -1,4 +1,4 @@
-import { currentTraceId } from "../context";
+import { currentTraceId } from "@dexter.js/types";
 import { getEmitter } from "../init";
 
 /**
@@ -14,9 +14,9 @@ import { getEmitter } from "../init";
  * const prisma = instrumentPrisma(new PrismaClient());
  * ```
  */
-export function instrumentPrisma<T extends { $extends: (...args: any[]) => any }>(
-  client: T,
-): T {
+export function instrumentPrisma<
+  T extends { $extends: (...args: any[]) => any },
+>(client: T): T {
   if (!client || typeof client.$extends !== "function") {
     console.warn(
       "[dexter] PrismaClient.$extends not found — skipping Prisma instrumentation. " +
@@ -40,6 +40,7 @@ export function instrumentPrisma<T extends { $extends: (...args: any[]) => any }
           query: (args: any) => Promise<any>;
         }) {
           const traceId = currentTraceId();
+          console.log("[prisma] traceId at query start:", traceId, operation);
           const start = performance.now();
           const target = `prisma.${model}.${operation}`;
 

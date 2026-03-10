@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist *.tsbuildinfo",
+    "dev": "tsc --watch & nodemon dist/index.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

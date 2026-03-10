@@ -45,7 +45,6 @@ export class SocketEmitter {
   /** Flush the current buffer to the sidecar socket. */
   private flush(): void {
     if (this.buffer.length === 0) return;
-
     const batch: EventBatch = {
       events: this.buffer.splice(0),
       sentAt: Date.now(),

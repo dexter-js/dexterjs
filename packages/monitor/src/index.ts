@@ -1,6 +1,6 @@
 export { monitor, init, getEmitter, type MonitorOptions } from "./init";
 export { SocketEmitter } from "./emitter";
-export { traceStore, currentTraceId } from "./context";
+export { traceStore, currentTraceId } from "@dexter.js/types";
 export { LogCollector } from "./collectors/log";
 export { MetricsCollector } from "./collectors/metrics";
 

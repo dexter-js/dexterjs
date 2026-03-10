@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { traceStore } from "../context";
+import { traceStore } from "@dexter.js/types";
 import { getEmitter } from "../init";
 
 /**

@@ -4,7 +4,7 @@
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "include": ["src"],
+  "include": ["src", "../../shared/types/src/context.ts"],
   "references": [
     { "path": "../../shared/types" }
   ]
