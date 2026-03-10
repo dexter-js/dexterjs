@@ -1,4 +1,4 @@
-import { currentTraceId } from "../context";
+import { currentTraceId } from "@dexter.js/types";
 import { getEmitter } from "../init";
 
 /**
@@ -52,7 +52,7 @@ export function instrumentMongoose(mongoose: any): void {
 
       schema.post(op, function (this: any, _result: any, next: any) {
         const start: number | undefined = this[preHookName];
-        const traceId: string = this.__dexterTraceId ?? currentTraceId();
+        const traceId = this.__dexterTraceId || currentTraceId();
 
         if (start !== undefined) {
           const emitter = getEmitter();
