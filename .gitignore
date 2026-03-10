@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+*.log
+/tmp/dexter.sock
+coverage/
+.env
+dexter.db
+dexter.db-wal
+dexter.db-shm
+__test_dexter.db*
