@@ -1,4 +1,4 @@
-// aggregator — route stats & insights engine
+// aggregator — includes N+1 detection — route stats & insights engine
 import { getDb } from "./db";
 
 /** Percentile stats for a single route. */
