@@ -1,0 +1,21 @@
+{
+  "name": "@dexter.js/logger",
+  "version": "0.0.1",
+  "description": "Zero-dependency, production-grade structured logger for Node.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.4.0"
+  },
+  "keywords": ["logger", "logging", "structured", "json", "typescript", "node"],
+  "license": "MIT"
+}
