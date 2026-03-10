@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DexterJS — Your app's secret lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ── Reset & Base ────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root {
+  --bg-primary:    #0a0b10;
+  --bg-card:       #12131a;
+  --bg-card-hover: #181923;
+  --bg-surface:    #1a1b26;
+  --border:        #2a2b3d;
+  --border-glow:   #3d2f6b;
+  --text-primary:  #e0def4;
+  --text-muted:    #6e6a86;
+  --text-dim:      #44415a;
+  --purple:        #c084fc;
+  --purple-dim:    #7c3aed;
+  --blue:          #60a5fa;
+  --blue-dim:      #2563eb;
+  --green:         #34d399;
+  --green-dim:     #059669;
+  --yellow:        #fbbf24;
+  --yellow-dim:    #d97706;
+  --red:           #f87171;
+  --red-dim:       #dc2626;
+  --cyan:          #22d3ee;
+  --font-mono:     'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --radius:        10px;
+  --radius-sm:     6px;
+}
+html { font-size: 14px }
+body {
+  font-family: var(--font-mono);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px }
+::-webkit-scrollbar-track { background: var(--bg-primary) }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px }
+::-webkit-scrollbar-thumb:hover { background: var(--purple-dim) }
+
+/* ── Header ──────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #0e0f16 0%, var(--bg-primary) 100%);
+  position: sticky; top: 0; z-index: 100;
+}
+.brand { display: flex; align-items: center; gap: 14px }
+.logo {
+  font-size: 1.5rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 50%, var(--cyan) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; letter-spacing: -0.5px;
+}
+.tagline { color: var(--text-muted); font-size: 0.78rem; letter-spacing: 0.5px }
+.header-right { display: flex; align-items: center; gap: 16px }
+.health-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  transition: all 0.4s ease;
+}
+.health-dot.warn { background: var(--yellow); box-shadow: 0 0 8px var(--yellow) }
+.health-dot.critical { background: var(--red); box-shadow: 0 0 8px var(--red) }
+.last-updated { color: var(--text-dim); font-size: 0.72rem }
+
+/* ── Tab Navigation ──────────────────────────────────────────────────── */
+.tabs {
+  display: flex; gap: 0;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-primary);
+}
+.tab-btn {
+  background: none; border: none; color: var(--text-muted);
+  font-family: var(--font-mono); font-size: 0.85rem; font-weight: 500;
+  padding: 14px 22px; cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.tab-btn:hover { color: var(--text-primary) }
+.tab-btn.active {
+  color: var(--purple);
+  border-bottom-color: var(--purple);
+}
+.tab-btn .tab-icon { margin-right: 6px; font-size: 0.9rem }
+
+/* ── Main Content ────────────────────────────────────────────────────── */
+.content { padding: 24px 28px; max-width: 1400px; margin: 0 auto }
+.tab-panel { display: none; animation: fadeIn 0.25s ease }
+.tab-panel.active { display: block }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: translateY(0) } }
+
+/* ── Stats Grid ──────────────────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px; margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--purple-dim), var(--blue-dim));
+  opacity: 0; transition: opacity 0.25s ease;
+}
+.stat-card:hover { border-color: var(--border-glow); transform: translateY(-2px) }
+.stat-card:hover::before { opacity: 1 }
+.stat-label { color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px }
+.stat-value { font-size: 1.7rem; font-weight: 700; letter-spacing: -1px }
+.stat-sub { color: var(--text-dim); font-size: 0.72rem; margin-top: 4px }
+
+/* ── Health Banner ───────────────────────────────────────────────────── */
+.health-banner {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 22px; margin-bottom: 22px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.health-icon { font-size: 1.8rem }
+.health-label { font-weight: 600; font-size: 1rem }
+.health-detail { color: var(--text-muted); font-size: 0.8rem }
+.health-banner.healthy { border-color: #065f46; background: linear-gradient(135deg, rgba(5,150,105,0.08), transparent) }
+.health-banner.degraded { border-color: #92400e; background: linear-gradient(135deg, rgba(217,119,6,0.08), transparent) }
+.health-banner.unhealthy { border-color: #991b1b; background: linear-gradient(135deg, rgba(220,38,38,0.08), transparent) }
+
+/* ── Table ───────────────────────────────────────────────────────────── */
+.data-table {
+  width: 100%; border-collapse: collapse;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.data-table th {
+  text-align: left; padding: 14px 16px;
+  background: var(--bg-surface);
+  color: var(--text-muted); font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 1px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+.data-table td {
+  padding: 12px 16px; border-bottom: 1px solid #1e1f2e;
+  font-size: 0.85rem; vertical-align: middle;
+}
+.data-table tr:last-child td { border-bottom: none }
+.data-table tr:hover td { background: var(--bg-card-hover) }
+
+/* ── Badges ──────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: 4px;
+  font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.badge-method {
+  background: rgba(96,165,250,0.12); color: var(--blue);
+  min-width: 42px; justify-content: center;
+}
+.badge-method.post { background: rgba(52,211,153,0.12); color: var(--green) }
+.badge-method.put { background: rgba(251,191,36,0.12); color: var(--yellow) }
+.badge-method.delete { background: rgba(248,113,113,0.12); color: var(--red) }
+.badge-method.patch { background: rgba(192,132,252,0.12); color: var(--purple) }
+.badge-hot {
+  background: linear-gradient(135deg, rgba(248,113,113,0.15), rgba(251,191,36,0.15));
+  color: var(--yellow);
+  margin-left: 8px;
+}
+.latency-good { color: var(--green) }
+.latency-warn { color: var(--yellow) }
+.latency-bad { color: var(--red) }
+
+/* ── Log Viewer ──────────────────────────────────────────────────────── */
+.log-controls {
+  display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.filter-btn {
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-muted); font-family: var(--font-mono);
+  font-size: 0.78rem; padding: 6px 14px;
+  border-radius: var(--radius-sm); cursor: pointer;
+  transition: all 0.2s ease;
+}
+.filter-btn:hover { border-color: var(--purple-dim); color: var(--text-primary) }
+.filter-btn.active { background: var(--purple-dim); border-color: var(--purple); color: #fff }
+.log-list { display: flex; flex-direction: column; gap: 4px }
+.log-entry {
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  display: grid;
+  grid-template-columns: 150px 60px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  transition: border-color 0.2s;
+}
+.log-entry:hover { border-color: var(--border-glow) }
+.log-time { color: var(--text-dim); font-size: 0.75rem }
+.log-level {
+  padding: 1px 6px; border-radius: 3px;
+  font-size: 0.68rem; font-weight: 600;
+  text-transform: uppercase; text-align: center;
+}
+.log-level.error { background: rgba(248,113,113,0.15); color: var(--red) }
+.log-level.warn { background: rgba(251,191,36,0.15); color: var(--yellow) }
+.log-level.info { background: rgba(52,211,153,0.15); color: var(--green) }
+.log-level.debug { background: rgba(110,106,134,0.2); color: var(--text-muted) }
+.log-level.fatal { background: rgba(220,38,38,0.25); color: #fca5a5 }
+.log-msg { color: var(--text-primary); word-break: break-word }
+.log-trace {
+  color: var(--purple); font-size: 0.72rem; cursor: pointer;
+  text-decoration: none; opacity: 0.8;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.log-trace:hover { opacity: 1; text-decoration: underline }
+
+/* ── Trace Expansion ─────────────────────────────────────────────────── */
+.trace-detail {
+  margin: 2px 0 8px;
+  padding: 14px 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--purple-dim);
+  border-radius: var(--radius-sm);
+  animation: slideDown 0.2s ease;
+}
+@keyframes slideDown { from { opacity:0; max-height:0 } to { opacity:1; max-height:500px } }
+.trace-detail h4 { color: var(--purple); font-size: 0.78rem; margin-bottom: 10px; font-weight: 600 }
+.span-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 80px;
+  gap: 8px; padding: 5px 0;
+  font-size: 0.78rem;
+  border-bottom: 1px dashed #1e1f2e;
+}
+.span-row:last-child { border-bottom: none }
+.span-type {
+  padding: 1px 6px; border-radius: 3px;
+  font-size: 0.68rem; font-weight: 600;
+  text-transform: uppercase; text-align: center;
+}
+.span-type.db { background: rgba(96,165,250,0.15); color: var(--blue) }
+.span-type.http { background: rgba(192,132,252,0.15); color: var(--purple) }
+.span-type.cache { background: rgba(34,211,238,0.15); color: var(--cyan) }
+.span-target { color: var(--text-primary); word-break: break-all }
+.span-dur { color: var(--text-muted); text-align: right }
+
+/* ── Insight Cards ───────────────────────────────────────────────────── */
+.insights-grid { display: flex; flex-direction: column; gap: 12px }
+.insight-card {
+  padding: 18px 22px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex; gap: 16px; align-items: flex-start;
+  transition: all 0.2s ease;
+}
+.insight-card:hover { border-color: var(--border-glow); transform: translateX(4px) }
+.insight-severity {
+  padding: 3px 10px; border-radius: 4px;
+  font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  white-space: nowrap; flex-shrink: 0;
+  margin-top: 2px;
+}
+.insight-severity.critical { background: rgba(220,38,38,0.18); color: var(--red) }
+.insight-severity.warning  { background: rgba(217,119,6,0.18); color: var(--yellow) }
+.insight-severity.info     { background: rgba(96,165,250,0.18); color: var(--blue) }
+.insight-body { flex: 1 }
+.insight-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px }
+.insight-desc { color: var(--text-muted); font-size: 0.8rem; line-height: 1.5 }
+.insight-meta { color: var(--text-dim); font-size: 0.72rem; margin-top: 6px }
+
+/* ── Empty State ─────────────────────────────────────────────────────── */
+.empty-state {
+  text-align: center; padding: 60px 20px; color: var(--text-muted);
+}
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.6 }
+.empty-state .empty-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary) }
+.empty-state .empty-sub { font-size: 0.82rem }
+
+/* ── Pulse animation ─────────────────────────────────────────────────── */
+@keyframes pulse { 0%,100%{ opacity:1 } 50%{ opacity:.4 } }
+.loading { animation: pulse 1.5s ease-in-out infinite; color: var(--text-dim) }
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .content { padding: 16px }
+  .header { padding: 12px 16px }
+  .tabs { padding: 0 16px; overflow-x: auto }
+  .tab-btn { padding: 12px 14px; font-size: 0.78rem; white-space: nowrap }
+  .stats-grid { grid-template-columns: repeat(2, 1fr) }
+  .log-entry { grid-template-columns: 1fr; gap: 4px }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="brand">
+    <div>
+      <div class="logo">⚗ DexterJS</div>
+      <div class="tagline">Your app's secret lab</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="health-dot" id="healthDot" title="App Health"></div>
+    <div class="last-updated" id="lastUpdated">connecting…</div>
+  </div>
+</header>
+
+<!-- ── Tabs ─────────────────────────────────────────────────────────── -->
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="overview"><span class="tab-icon">◈</span>Overview</button>
+  <button class="tab-btn" data-tab="routes"><span class="tab-icon">⇄</span>Routes</button>
+  <button class="tab-btn" data-tab="logs"><span class="tab-icon">▤</span>Logs</button>
+  <button class="tab-btn" data-tab="insights"><span class="tab-icon">◉</span>Insights</button>
+</nav>
+
+<!-- ── Content ─────────────────────────────────────────────────────── -->
+<main class="content">
+
+  <!-- ▸ Overview ──────────────────────────────────────────────────── -->
+  <section class="tab-panel active" id="panel-overview">
+    <div id="healthBanner" class="health-banner healthy">
+      <div class="health-icon">⚗</div>
+      <div>
+        <div class="health-label" id="healthLabel">All systems nominal</div>
+        <div class="health-detail" id="healthDetail">Waiting for data…</div>
+      </div>
+    </div>
+    <div class="stats-grid" id="overviewStats">
+      <div class="stat-card"><div class="stat-label">Total Requests</div><div class="stat-value loading" id="ov-requests">—</div></div>
+      <div class="stat-card"><div class="stat-label">Error Rate</div><div class="stat-value loading" id="ov-error-rate">—</div><div class="stat-sub" id="ov-error-sub"></div></div>
+      <div class="stat-card"><div class="stat-label">Avg Response</div><div class="stat-value loading" id="ov-avg-resp">—</div><div class="stat-sub">ms</div></div>
+      <div class="stat-card"><div class="stat-label">Event Loop Lag</div><div class="stat-value loading" id="ov-el-lag">—</div><div class="stat-sub">ms</div></div>
+      <div class="stat-card"><div class="stat-label">CPU Usage</div><div class="stat-value loading" id="ov-cpu">—</div></div>
+      <div class="stat-card"><div class="stat-label">Memory Usage</div><div class="stat-value loading" id="ov-mem">—</div><div class="stat-sub">MB</div></div>
+    </div>
+  </section>
+
+  <!-- ▸ Routes ────────────────────────────────────────────────────── -->
+  <section class="tab-panel" id="panel-routes">
+    <div id="routesContent">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Route</th><th>Method</th><th>p50</th><th>p95</th><th>p99</th><th>Requests</th><th>Error Rate</th>
+          </tr>
+        </thead>
+        <tbody id="routesBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="routesEmpty" style="display:none">
+      <div class="empty-icon">⇄</div>
+      <div class="empty-title">No routes tracked yet</div>
+      <div class="empty-sub">Routes will appear here once your app starts handling requests.</div>
+    </div>
+  </section>
+
+  <!-- ▸ Logs ──────────────────────────────────────────────────────── -->
+  <section class="tab-panel" id="panel-logs">
+    <div class="log-controls">
+      <button class="filter-btn active" data-level="all">All</button>
+      <button class="filter-btn" data-level="error">Error</button>
+      <button class="filter-btn" data-level="warn">Warn</button>
+      <button class="filter-btn" data-level="info">Info</button>
+      <button class="filter-btn" data-level="debug">Debug</button>
+    </div>
+    <div class="log-list" id="logList"></div>
+    <div class="empty-state" id="logsEmpty" style="display:none">
+      <div class="empty-icon">▤</div>
+      <div class="empty-title">No logs captured yet</div>
+      <div class="empty-sub">Logs will stream here as your application runs.</div>
+    </div>
+  </section>
+
+  <!-- ▸ Insights ──────────────────────────────────────────────────── -->
+  <section class="tab-panel" id="panel-insights">
+    <div class="insights-grid" id="insightsList"></div>
+    <div class="empty-state" id="insightsEmpty" style="display:none">
+      <div class="empty-icon">🧪</div>
+      <div class="empty-title">All systems nominal</div>
+      <div class="empty-sub">Dexter approves — no issues detected.</div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   DexterJS Dashboard — vanilla JS, no deps
+   ═══════════════════════════════════════════════════════════════════════ */
+
+// ── State ──────────────────────────────────────────────────────────────
+let activeTab = 'overview';
+let logFilter = 'all';
+let expandedTraces = new Set();
+let timers = {};
+
+// ── Tab Switching ──────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    if (tab === activeTab) return;
+
+    document.querySelector('.tab-btn.active').classList.remove('active');
+    btn.classList.add('active');
+    document.querySelector('.tab-panel.active').classList.remove('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+
+    activeTab = tab;
+    stopAllTimers();
+    loadTab(tab);
+    startTimer(tab);
+  });
+});
+
+// ── Log Filter ─────────────────────────────────────────────────────────
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelector('.filter-btn.active').classList.remove('active');
+    btn.classList.add('active');
+    logFilter = btn.dataset.level;
+    loadLogs();
+  });
+});
+
+// ── Timer Management ───────────────────────────────────────────────────
+const INTERVALS = { overview: 3000, routes: 5000, logs: 2000, insights: 5000 };
+
+function startTimer(tab) {
+  loadTab(tab);
+  timers[tab] = setInterval(() => loadTab(tab), INTERVALS[tab]);
+}
+
+function stopAllTimers() {
+  Object.values(timers).forEach(clearInterval);
+  timers = {};
+}
+
+function loadTab(tab) {
+  switch (tab) {
+    case 'overview': loadOverview(); break;
+    case 'routes':   loadRoutes();   break;
+    case 'logs':     loadLogs();     break;
+    case 'insights': loadInsights(); break;
+  }
+}
+
+// ── Fetch Helper ───────────────────────────────────────────────────────
+async function api(path) {
+  try {
+    const res = await fetch('/api' + path);
+    if (!res.ok) throw new Error(res.statusText);
+    return await res.json();
+  } catch (e) {
+    console.warn('[dexter-dashboard] fetch error:', path, e.message);
+    return null;
+  }
+}
+
+function updateTimestamp() {
+  const now = new Date();
+  const ts = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  document.getElementById('lastUpdated').textContent = 'updated ' + ts;
+}
+
+// ── Overview ───────────────────────────────────────────────────────────
+async function loadOverview() {
+  const d = await api('/overview');
+  if (!d) return;
+  updateTimestamp();
+
+  // Stats
+  setText('ov-requests', fmtNum(d.totalRequests));
+  const errPct = (d.errorRate * 100).toFixed(1);
+  setText('ov-error-rate', errPct + '%');
+  setColor('ov-error-rate', d.errorRate > 0.1 ? 'var(--red)' : d.errorRate > 0.05 ? 'var(--yellow)' : 'var(--green)');
+  setText('ov-error-sub', d.totalRequests > 0 ? Math.round(d.errorRate * d.totalRequests) + ' errors' : '');
+  setText('ov-avg-resp', d.avgResponseTime.toFixed(1));
+  setText('ov-el-lag', d.eventLoopLag.toFixed(1));
+  setText('ov-cpu', (d.cpuUsage * 100).toFixed(1) + '%');
+  setColor('ov-cpu', d.cpuUsage > 0.8 ? 'var(--red)' : d.cpuUsage > 0.5 ? 'var(--yellow)' : 'var(--green)');
+  setText('ov-mem', (d.memoryUsage / 1024 / 1024).toFixed(1));
+
+  // Remove loading class from all stat values
+  document.querySelectorAll('.stat-value.loading').forEach(el => el.classList.remove('loading'));
+
+  // Health banner
+  const banner = document.getElementById('healthBanner');
+  const dot    = document.getElementById('healthDot');
+  let level = 'healthy';
+  let label = 'All systems nominal';
+  let detail = `${d.totalRequests} requests tracked · ${d.eventLoopLag.toFixed(1)}ms event loop lag`;
+
+  if (d.errorRate > 0.1 || d.eventLoopLag > 500) {
+    level = 'unhealthy';
+    label = 'Issues detected';
+    detail = d.errorRate > 0.1
+      ? `Error rate at ${errPct}% — investigate failing routes`
+      : `Event loop lag at ${d.eventLoopLag.toFixed(0)}ms — possible blocking`;
+  } else if (d.errorRate > 0.05 || d.eventLoopLag > 100) {
+    level = 'degraded';
+    label = 'Performance degraded';
+    detail = d.errorRate > 0.05
+      ? `Error rate climbing: ${errPct}%`
+      : `Event loop lag elevated: ${d.eventLoopLag.toFixed(1)}ms`;
+  }
+
+  banner.className = 'health-banner ' + level;
+  dot.className = 'health-dot' + (level === 'degraded' ? ' warn' : level === 'unhealthy' ? ' critical' : '');
+  setText('healthLabel', label);
+  setText('healthDetail', detail);
+}
+
+// ── Routes ─────────────────────────────────────────────────────────────
+async function loadRoutes() {
+  const data = await api('/routes');
+  if (!data) return;
+  updateTimestamp();
+
+  const tbody = document.getElementById('routesBody');
+  const empty = document.getElementById('routesEmpty');
+  const content = document.getElementById('routesContent');
+
+  if (!data.length) {
+    content.style.display = 'none';
+    empty.style.display = '';
+    return;
+  }
+  content.style.display = '';
+  empty.style.display = 'none';
+
+  // Determine hot routes (top 3 by count)
+  const sorted = [...data].sort((a, b) => b.count - a.count);
+  const hotSet = new Set(sorted.slice(0, 3).filter(r => r.count >= 10).map(r => r.route + r.method));
+
+  tbody.innerHTML = data.map(r => {
+    const isHot = hotSet.has(r.route + r.method);
+    const mClass = r.method.toLowerCase();
+    return `<tr>
+      <td>${esc(r.route)}${isHot ? '<span class="badge badge-hot">🔥 HOT</span>' : ''}</td>
+      <td><span class="badge badge-method ${mClass}">${r.method}</span></td>
+      <td class="${latClass(r.p50)}">${r.p50.toFixed(1)}<small>ms</small></td>
+      <td class="${latClass(r.p95)}">${r.p95.toFixed(1)}<small>ms</small></td>
+      <td class="${latClass(r.p99)}">${r.p99.toFixed(1)}<small>ms</small></td>
+      <td>${fmtNum(r.count)}</td>
+      <td class="${r.errorRate > 0.1 ? 'latency-bad' : r.errorRate > 0.05 ? 'latency-warn' : ''}">${(r.errorRate * 100).toFixed(1)}%</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Logs ───────────────────────────────────────────────────────────────
+async function loadLogs() {
+  const data = await api('/logs?limit=200');
+  if (!data) return;
+  updateTimestamp();
+
+  const list  = document.getElementById('logList');
+  const empty = document.getElementById('logsEmpty');
+
+  let logs = data;
+  if (logFilter !== 'all') {
+    logs = logs.filter(l => l.level === logFilter);
+  }
+
+  if (!logs.length) {
+    list.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  let html = '';
+  for (const log of logs) {
+    const ts = new Date(log.timestamp).toLocaleTimeString('en-US', { hour12: false, hour:'2-digit', minute:'2-digit', second:'2-digit', fractionalSecondDigits: 3 });
+    const traceShort = log.traceId ? log.traceId.slice(0, 8) : '';
+    const isExpanded = expandedTraces.has(log.traceId);
+
+    html += `<div class="log-entry">
+      <span class="log-time">${ts}</span>
+      <span class="log-level ${log.level}">${log.level}</span>
+      <span class="log-msg">${esc(log.message)}</span>
+      ${log.traceId ? `<a class="log-trace" onclick="toggleTrace('${log.traceId}', this)" title="${log.traceId}">${traceShort}…</a>` : '<span></span>'}
+    </div>`;
+
+    if (isExpanded) {
+      html += `<div class="trace-detail" id="trace-${log.traceId}"><h4>⧫ Trace ${log.traceId.slice(0, 12)}… — loading spans…</h4></div>`;
+    }
+  }
+  list.innerHTML = html;
+
+  // Load already-expanded traces
+  for (const tid of expandedTraces) {
+    loadSpans(tid);
+  }
+}
+
+async function toggleTrace(traceId, el) {
+  if (expandedTraces.has(traceId)) {
+    expandedTraces.delete(traceId);
+    const detail = document.getElementById('trace-' + traceId);
+    if (detail) detail.remove();
+    return;
+  }
+  expandedTraces.add(traceId);
+
+  // Insert detail panel after the log entry
+  const entry = el.closest('.log-entry');
+  const detail = document.createElement('div');
+  detail.className = 'trace-detail';
+  detail.id = 'trace-' + traceId;
+  detail.innerHTML = `<h4>⧫ Trace ${traceId.slice(0, 12)}… — loading…</h4>`;
+  entry.after(detail);
+
+  await loadSpans(traceId);
+}
+
+async function loadSpans(traceId) {
+  const spans = await api('/spans?traceId=' + encodeURIComponent(traceId));
+  const container = document.getElementById('trace-' + traceId);
+  if (!container) return;
+
+  if (!spans || !spans.length) {
+    container.innerHTML = `<h4>⧫ Trace ${traceId.slice(0, 12)}…</h4><div style="color:var(--text-muted);font-size:0.78rem">No spans found for this trace.</div>`;
+    return;
+  }
+
+  let html = `<h4>⧫ Trace ${traceId.slice(0, 12)}… — ${spans.length} span${spans.length > 1 ? 's' : ''}</h4>`;
+  for (const s of spans) {
+    const typeClass = s.type === 'db' ? 'db' : s.type === 'http' ? 'http' : 'cache';
+    html += `<div class="span-row">
+      <span class="span-type ${typeClass}">${s.type}</span>
+      <span class="span-target">${esc(s.target || '—')}</span>
+      <span class="span-dur">${s.duration != null ? s.duration.toFixed(1) + 'ms' : '—'}</span>
+    </div>`;
+  }
+  container.innerHTML = html;
+}
+
+// ── Insights ───────────────────────────────────────────────────────────
+async function loadInsights() {
+  const data = await api('/insights');
+  if (!data) return;
+  updateTimestamp();
+
+  const list  = document.getElementById('insightsList');
+  const empty = document.getElementById('insightsEmpty');
+
+  if (!data.length) {
+    list.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const severityMap = {
+    'n+1':             'critical',
+    'slow-query':      'warning',
+    'high-error-rate': 'critical',
+    'hot-route':       'info',
+  };
+  const titleMap = {
+    'n+1':             'N+1 Query Detected',
+    'slow-query':      'Slow Query',
+    'high-error-rate': 'High Error Rate',
+    'hot-route':       'Hot Route',
+  };
+
+  list.innerHTML = data.map(ins => {
+    const sev = severityMap[ins.type] || 'info';
+    const title = titleMap[ins.type] || ins.type;
+    const route = ins.metadata?.route || ins.metadata?.target || '';
+    const traceId = ins.metadata?.traceId || '';
+
+    return `<div class="insight-card">
+      <span class="insight-severity ${sev}">${sev}</span>
+      <div class="insight-body">
+        <div class="insight-title">${esc(title)}${route ? ' on ' + esc(route) : ''}</div>
+        <div class="insight-desc">${esc(ins.message)}</div>
+        ${traceId ? `<div class="insight-meta">trace: ${traceId.slice(0, 12)}…</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────
+function setText(id, val) { document.getElementById(id).textContent = val }
+function setColor(id, col) { document.getElementById(id).style.color = col }
+function fmtNum(n) { return n != null ? n.toLocaleString() : '—' }
+function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML }
+function latClass(ms) { return ms > 500 ? 'latency-bad' : ms > 200 ? 'latency-warn' : 'latency-good' }
+
+// ── Boot ───────────────────────────────────────────────────────────────
+startTimer('overview');
+</script>
+</body>
+</html>
