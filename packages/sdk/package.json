@@ -1,7 +1,10 @@
 {
-  "name": "@dexterjs/sdk",
-  "version": "0.1.0",
+  "name": "@dexter.js/sdk",
+  "version": "0.0.1",
   "description": "DexterJS SDK — auto-instrument your Node.js app",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -10,7 +13,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@dexterjs/types": "workspace:*"
+  "@dexter.js/sidecar": "workspace:*",
+    "@dexter.js/types": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
@@ -24,10 +28,20 @@
     "axios": ">=1.0.0"
   },
   "peerDependenciesMeta": {
-    "express": { "optional": true },
-    "pg": { "optional": true },
-    "mongoose": { "optional": true },
-    "ioredis": { "optional": true },
-    "axios": { "optional": true }
+    "express": {
+      "optional": true
+    },
+    "pg": {
+      "optional": true
+    },
+    "mongoose": {
+      "optional": true
+    },
+    "ioredis": {
+      "optional": true
+    },
+    "axios": {
+      "optional": true
+    }
   }
 }

@@ -1,7 +1,10 @@
 {
-  "name": "@dexterjs/sidecar",
-  "version": "0.1.0",
+  "name": "@dexter.js/sidecar",
+  "version": "0.0.1",
   "description": "DexterJS Sidecar — local observability dashboard and aggregator",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -11,7 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@dexterjs/types": "workspace:*",
+    "@dexter.js/types": "workspace:*",
     "better-sqlite3": "^11.0.0",
     "express": "^4.19.0"
   },
