@@ -6,7 +6,7 @@
   },
   "include": ["src"],
   "references": [
-    { "path": "../../shared/types" },
-    { "path": "../../packages/sdk" }
+    { "path": "../../packages/logger" },
+    { "path": "../../packages/monitor" }
   ]
 }

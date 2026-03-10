@@ -10,6 +10,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@dexter.js/types": path.resolve(__dirname, "shared/types/src"),
+      "@dexter.js/logger": path.resolve(__dirname, "packages/logger/src"),
+      "@dexter.js/monitor": path.resolve(__dirname, "packages/monitor/src"),
       "@dexter.js/sdk": path.resolve(__dirname, "packages/sdk/src"),
       "@dexter.js/sidecar": path.resolve(__dirname, "packages/sidecar/src"),
     },

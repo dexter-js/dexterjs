@@ -1,25 +1,35 @@
 import express, { type Request, type Response } from "express";
 import { Pool } from "pg";
 
-// ─── Initialise DexterJS FIRST so all subsequent modules are instrumented ────
-import {
-  init,
-  expressMiddleware,
-  instrumentPg,
-  LogCollector,
-} from "@dexter.js/sdk";
+// ─── Pattern 1: Logger only ──────────────────────────────────────────────────
+import { createLogger } from "@dexter.js/logger";
+const logger = createLogger({
+  level: "debug",
+  format: "pretty",
+  transport: "terminal",
+  redact: ["password", "token", "secret"],
+  context: { service: "express-app", version: "0.1.0" },
+});
 
-const emitter = init({
+// ─── Pattern 2 & 3: Monitor (with logger integration) ───────────────────────
+import { monitor, expressMiddleware, instrumentPg } from "@dexter.js/monitor";
+
+const app = express();
+app.use(express.json());
+
+app.use("/.well-known", (_req, res) => res.status(204).end());
+
+// Initialize monitor — pass logger so logs flow through sidecar too.
+monitor({
+  app,
+  logger,
   port: 4000,
   autoSpawn: true,
 });
 
-// Instrument pg before creating any pools/clients.
+// Instrument database.
 instrumentPg(Pool);
 
-const log = new LogCollector(emitter);
-
-// ─── Postgres pool (configure via env vars) ──────────────────────────────────
 const pool = new Pool({
   connectionString:
     process.env["DATABASE_URL"] ?? "postgresql://localhost:5432/dexterjs_demo",
@@ -27,32 +37,26 @@ const pool = new Pool({
 });
 
 pool.on("error", (err) => {
-  log.warn("PostgreSQL pool error — routes will return mock data.", {
+  logger.warn("PostgreSQL pool error — routes will return mock data.", {
     error: err.message,
   });
 });
 
-// ─── Express app ─────────────────────────────────────────────────────────────
-const app = express();
-app.use(express.json());
-
-// Silently handle Chrome DevTools / well-known probes.
-app.use("/.well-known", (_req, res) => res.status(204).end());
-
-// Attach DexterJS middleware — captures traces for every request.
+// Auto-trace every request.
 app.use(expressMiddleware());
 
-// ─── Routes ──────────────────────────────────────────────────────────────────
+// Child logger for request handlers.
+const reqLog = logger.child({ module: "routes" });
 
 app.get("/users", async (_req: Request, res: Response) => {
   try {
     const result = await pool.query(
       "SELECT id, name, email FROM users LIMIT 50",
     );
-    log.info("Fetched users list", { count: result.rows.length });
+    reqLog.info("Fetched users list", { count: result.rows.length });
     res.json(result.rows);
   } catch {
-    log.warn("Returning mock users (PG unavailable)");
+    reqLog.warn("Returning mock users (PG unavailable)");
     res.json([
       { id: 1, name: "Alice", email: "alice@example.com" },
       { id: 2, name: "Bob", email: "bob@example.com" },
@@ -68,14 +72,14 @@ app.get("/users/:id", async (req: Request, res: Response) => {
       [userId],
     );
     if (result.rows.length === 0) {
-      log.info("User not found", { userId });
+      reqLog.info("User not found", { userId });
       res.status(404).json({ error: "User not found" });
       return;
     }
-    log.info("Fetched user", { userId });
+    reqLog.info("Fetched user", { userId });
     res.json(result.rows[0]);
   } catch {
-    log.warn("Returning mock user (PG unavailable)", { userId });
+    reqLog.warn("Returning mock user (PG unavailable)", { userId });
     res.json({
       id: Number(userId),
       name: "Mock User",
@@ -96,18 +100,17 @@ app.post("/users", async (req: Request, res: Response) => {
       "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id, name, email",
       [name, email],
     );
-    log.info("Created user", { name, email });
+    reqLog.info("Created user", { name, email });
     res.status(201).json(result.rows[0]);
   } catch {
-    log.warn("Returning mock created user (PG unavailable)", { name, email });
+    reqLog.warn("Returning mock created user (PG unavailable)", { name, email });
     res.status(201).json({ id: 999, name, email });
   }
 });
 
-// ─── Start ───────────────────────────────────────────────────────────────────
 const PORT = Number(process.env["PORT"]) || 3000;
 
 app.listen(PORT, () => {
-  console.log(`[example-express] listening on http://localhost:${PORT}`);
-  console.log(`[dexter] dashboard at http://localhost:4000`);
+  logger.info("server started", { port: PORT, url: `http://localhost:${PORT}` });
+  logger.info("dashboard available", { url: "http://localhost:4000" });
 });

@@ -12,8 +12,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@dexter.js/sdk": "workspace:*",
-    "@dexter.js/types": "workspace:*",
+    "@dexter.js/logger": "workspace:*",
+    "@dexter.js/monitor": "workspace:*",
     "express": "^4.19.0",
     "pg": "^8.12.0"
   },
