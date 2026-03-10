@@ -1,4 +1,4 @@
-import { currentTraceId } from "../context";
+import { currentTraceId } from "@dexter.js/types";
 import { getEmitter } from "../init";
 
 /**
@@ -20,6 +20,7 @@ import { getEmitter } from "../init";
  * TODO: Support instrumenting Redis Cluster and Sentinel instances.
  * TODO: Capture pipeline and multi/exec batches as a single logical span.
  */
+
 export function instrumentRedis(redisInstance: any): void {
   if (!redisInstance?.sendCommand) {
     console.warn(
@@ -37,22 +38,27 @@ export function instrumentRedis(redisInstance: any): void {
     const traceId = currentTraceId();
     const start = performance.now();
     const commandName: string = command?.name ?? "UNKNOWN";
+    const commandArgs: string[] = command?.args ?? [];
+    
+    // Include key (first arg) for context, redact value (second arg for SET)
+    const keyInfo = commandArgs[0] ? ` ${String(commandArgs[0])}` : '';
+    const target = `${commandName}${keyInfo}`;
 
     const result = originalSendCommand(command, ...rest);
 
     if (result && typeof result.then === "function") {
       return result
         .then((res: any) => {
-          emitRedisSpan(traceId, commandName, start);
+          emitRedisSpan(traceId, target, start);
           return res;
         })
         .catch((err: Error) => {
-          emitRedisSpan(traceId, commandName, start, err.message);
+          emitRedisSpan(traceId, target, start, err.message);
           throw err;
         });
     }
 
-    emitRedisSpan(traceId, commandName, start);
+    emitRedisSpan(traceId, target, start);
     return result;
   };
 }
