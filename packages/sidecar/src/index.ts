@@ -22,16 +22,22 @@ aggregator.start();
 const app = express();
 app.use(express.json());
 
-// Serve the dashboard UI at root.
-const dashboardPath = path.resolve(__dirname, "dashboard.html");
-app.get("/", (_req, res) => {
-  if (fs.existsSync(dashboardPath)) {
-    res.setHeader("Content-Type", "text/html");
-    res.sendFile(dashboardPath);
-  } else {
-    res.json({ name: "DexterJS Sidecar", status: "running", port: PORT });
-  }
-});
+// Serve the React dashboard build.
+const dashboardDist = path.resolve(__dirname, "../../dashboard/dist");
+if (fs.existsSync(dashboardDist)) {
+  app.use(express.static(dashboardDist));
+} else {
+  // Fallback: serve the legacy single-file dashboard.
+  const legacyPath = path.resolve(__dirname, "dashboard.html");
+  app.get("/", (_req, res) => {
+    if (fs.existsSync(legacyPath)) {
+      res.setHeader("Content-Type", "text/html");
+      res.sendFile(legacyPath);
+    } else {
+      res.json({ name: "DexterJS Sidecar", status: "running", port: PORT });
+    }
+  });
+}
 
 // JSON health check.
 app.get("/health", (_req, res) => {
@@ -39,6 +45,15 @@ app.get("/health", (_req, res) => {
 });
 
 app.use("/api", apiRouter);
+
+// SPA fallback — must come after /api and /health.
+if (fs.existsSync(dashboardDist)) {
+  app.get("*", (req, res) => {
+    if (!req.path.startsWith("/api")) {
+      res.sendFile(path.join(dashboardDist, "index.html"));
+    }
+  });
+}
 
 const httpServer = app.listen(PORT, () => {
   console.log(`[dexter-sidecar] HTTP dashboard on http://localhost:${PORT}`);
