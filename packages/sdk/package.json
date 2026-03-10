@@ -1,0 +1,33 @@
+{
+  "name": "@dexterjs/sdk",
+  "version": "0.1.0",
+  "description": "DexterJS SDK — auto-instrument your Node.js app",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@dexterjs/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.4.0"
+  },
+  "peerDependencies": {
+    "express": ">=4.0.0",
+    "pg": ">=8.0.0",
+    "mongoose": ">=7.0.0",
+    "ioredis": ">=5.0.0",
+    "axios": ">=1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "express": { "optional": true },
+    "pg": { "optional": true },
+    "mongoose": { "optional": true },
+    "ioredis": { "optional": true },
+    "axios": { "optional": true }
+  }
+}
