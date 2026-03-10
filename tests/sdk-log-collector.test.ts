@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { SocketEmitter } from "@dexter.js/sdk/emitter";
-import { LogCollector } from "@dexter.js/sdk/collectors/log";
-import { traceStore } from "@dexter.js/sdk/context";
+import { SocketEmitter } from "@dexter.js/monitor/emitter";
+import { LogCollector } from "@dexter.js/monitor/collectors/log";
+import { traceStore } from "@dexter.js/monitor/context";
 
 describe("SDK — LogCollector", () => {
   let emitter: SocketEmitter;

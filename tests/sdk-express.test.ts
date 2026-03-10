@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { EventEmitter } from "node:events";
-import { expressMiddleware } from "@dexter.js/sdk/instrumentors/express";
-import { traceStore, currentTraceId } from "@dexter.js/sdk/context";
+import { expressMiddleware } from "@dexter.js/monitor/instrumentors/express";
+import { traceStore, currentTraceId } from "@dexter.js/monitor/context";
 
 // We need to mock getEmitter() so the middleware can emit without a real socket.
-vi.mock("@dexter.js/sdk/init", () => {
+vi.mock("@dexter.js/monitor/init", () => {
   const emittedEvents: any[] = [];
   return {
     getEmitter: () => ({
@@ -19,7 +19,7 @@ vi.mock("@dexter.js/sdk/init", () => {
 import {
   _getEmittedEvents,
   _clearEmittedEvents,
-} from "@dexter.js/sdk/init";
+} from "@dexter.js/monitor/init";
 
 function createMockReq(overrides: Record<string, any> = {}): any {
   return {
