@@ -14,7 +14,7 @@ DexterJS is a lightweight Node.js observability library that auto-instruments yo
 
 ```bash
 # install
-pnpm add @dexterjs/sdk
+pnpm add @dexter.js/sdk
 
 # or from the monorepo
 git clone https://github.com/your-username/dexterjs.git
@@ -24,7 +24,7 @@ pnpm install && pnpm build
 
 ```typescript
 import express from "express";
-import { init, expressMiddleware, instrumentPg, LogCollector } from "@dexterjs/sdk";
+import { init, expressMiddleware, instrumentPg, LogCollector } from "@dexter.js/sdk";
 import { Pool } from "pg";
 
 // 1. init dexter — auto-spawns the sidecar process
@@ -110,10 +110,10 @@ That's it. Open `http://localhost:4000` to see your dashboard.
 ```
 dexterjs/
 ├── packages/
-│   ├── sdk/          # @dexterjs/sdk — instrumentation library
-│   └── sidecar/      # @dexterjs/sidecar — collector, storage, dashboard
+│   ├── sdk/          # @dexter.js/sdk — instrumentation library
+│   └── sidecar/      # @dexter.js/sidecar — collector, storage, dashboard
 ├── shared/
-│   └── types/        # @dexterjs/types — shared TypeScript interfaces
+│   └── types/        # @dexter.js/types — shared TypeScript interfaces
 ├── examples/
 │   └── express-app/  # demo app with pg
 ├── tests/            # vitest test suites
