@@ -1,6 +1,6 @@
 {
   "name": "@dexter.js/sidecar",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "DexterJS Sidecar — local observability dashboard and aggregator",
   "publishConfig": {
     "access": "public"

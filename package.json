@@ -1,6 +1,6 @@
 {
   "name": "dexterjs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "DexterJS — Your app's secret lab. A Node.js observability library for solo developers.",
   "scripts": {
