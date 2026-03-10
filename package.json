@@ -4,13 +4,15 @@
   "private": true,
   "description": "DexterJS — Your app's secret lab. A Node.js observability library for solo developers.",
   "scripts": {
-    "build": "pnpm -r build",
+    "build": "pnpm --filter @dexter.js/dashboard build && pnpm -r --filter=!@dexter.js/dashboard build ",
     "clean": "pnpm -r clean",
     "dev": "pnpm -r --parallel dev",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "dashboard:dev": "pnpm --filter @dexter.js/dashboard dev",
+    "dashboard:build": "pnpm --filter @dexter.js/dashboard build"
   },
   "engines": {
     "node": ">=18.0.0",
