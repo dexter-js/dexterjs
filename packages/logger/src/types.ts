@@ -74,6 +74,7 @@ export interface LogEntry {
   level: string;
   message: string;
   timestamp: string;
+  traceId?: string  
   context?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
 }

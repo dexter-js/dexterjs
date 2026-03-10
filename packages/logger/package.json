@@ -10,7 +10,11 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist *.tsbuildinfo",
+    "dev": "tsc --watch & nodemon dist/index.js",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@dexter.js/types": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

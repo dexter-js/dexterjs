@@ -8,6 +8,7 @@ import { LOG_LEVEL_PRIORITY } from "./types";
 import { TerminalTransport } from "./transports/terminal";
 import { FileTransport } from "./transports/file";
 import { SidecarTransport } from "./transports/sidecar";
+import { currentTraceId } from '@dexter.js/types';
 
 const DEFAULT_SOCKET_PATH = "/tmp/dexter.sock";
 
@@ -144,6 +145,7 @@ export class Logger {
       level,
       message,
       timestamp: new Date().toISOString(),
+      traceId : currentTraceId(),
       context:
         Object.keys(this.context).length > 0 ? { ...this.context } : undefined,
       metadata: metadata
