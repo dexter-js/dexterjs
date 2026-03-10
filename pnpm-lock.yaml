@@ -20,10 +20,10 @@ importers:
 
   examples/express-app:
     dependencies:
-      '@dexterjs/sdk':
+      '@dexter.js/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
-      '@dexterjs/types':
+      '@dexter.js/types':
         specifier: workspace:*
         version: link:../../shared/types
       express:
@@ -48,7 +48,10 @@ importers:
 
   packages/sdk:
     dependencies:
-      '@dexterjs/types':
+      '@dexter.js/sidecar':
+        specifier: workspace:*
+        version: link:../sidecar
+      '@dexter.js/types':
         specifier: workspace:*
         version: link:../../shared/types
       axios:
@@ -76,7 +79,7 @@ importers:
 
   packages/sidecar:
     dependencies:
-      '@dexterjs/types':
+      '@dexter.js/types':
         specifier: workspace:*
         version: link:../../shared/types
       better-sqlite3:
