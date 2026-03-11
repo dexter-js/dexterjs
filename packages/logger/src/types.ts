@@ -1,12 +1,23 @@
 // ─── Log Levels ──────────────────────────────────────────────────────────────
 
-export type LogLevel = "debug" | "info" | "warn" | "error";
+export type LogLevel = "debug" | "info" | "warn" | "error" | "fatal";
+
+// ─── Output Formats ─────────────────────────────────────────────────────────
+export type Format = "json" | "pretty" | "minimal";
+
+// ─── Environments & Transports ─────────────────────────────────────────────
+export type Environment = "development" | "production";
+
+// Auto-detect transport based on environment and terminal presence:
+export type TransportStrategy = "auto" | "terminal" | "file" | "both";
+
 
 export const LOG_LEVEL_PRIORITY: Record<LogLevel, number> = {
   debug: 0,
-  info: 1,
-  warn: 2,
+  info:  1,
+  warn:  2,
   error: 3,
+  fatal: 4,
 };
 
 // ─── File Options ────────────────────────────────────────────────────────────
@@ -22,6 +33,7 @@ export interface FileOptions {
     warn?: string;
     info?: string;
     debug?: string;
+    fatal?: string
   };
   /** Log rotation configuration. */
   rotation: {
@@ -40,17 +52,17 @@ export interface LoggerOptions {
   /** Minimum log level (default: 'info'). */
   level?: LogLevel;
   /** Output format (default: 'json' in production, 'pretty' in development). */
-  format?: "json" | "pretty" | "minimal";
+  format?: Format;
   /** Environment override (defaults to NODE_ENV). */
-  env?: "development" | "production";
+  env?: Environment;
   /**
    * Transport strategy.
    * - 'auto'     — picks based on env and monitor presence.
-   * - 'terminal' — stdout only
+   * - 'terminal' — stdout & stderr only
    * - 'file'     — file only
    * - 'both'     — terminal + file
    */
-  transport?: "auto" | "terminal" | "file" | "both";
+  transport?: TransportStrategy;
   /** File transport configuration (required when transport includes file). */
   file?: FileOptions;
   /** Static context fields attached to every log entry. */
@@ -74,7 +86,7 @@ export interface LogEntry {
   level: string;
   message: string;
   timestamp: string;
-  traceId?: string  
+  traceId?: string;
   context?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
 }

@@ -3,6 +3,9 @@ import type {
   LoggerOptions,
   LogEntry,
   Transport,
+  Format,
+  TransportStrategy,
+  Environment,
 } from "./types";
 import { LOG_LEVEL_PRIORITY } from "./types";
 import { TerminalTransport } from "./transports/terminal";
@@ -217,9 +220,9 @@ export class Logger {
 
 interface InternalOptions {
   level: LogLevel;
-  format: "json" | "pretty" | "minimal";
-  env: "development" | "production";
-  transport: "auto" | "terminal" | "file" | "both";
+  format: Format;
+  env: Environment;
+  transport: TransportStrategy;
   file?: Required<LoggerOptions>["file"];
   context: Record<string, unknown>;
   async: boolean;
@@ -229,7 +232,7 @@ interface InternalOptions {
 
 // ─── Factory ─────────────────────────────────────────────────────────────────
 
-function resolveEnv(): "development" | "production" {
+function resolveEnv(): Environment {
   const env = process.env["NODE_ENV"];
   if (env === "production") return "production";
   return "development";
