@@ -10,7 +10,14 @@ Zero-config observability for solo Node.js developers. Logs, traces, metrics and
 
 ## Demo
 
-![DexterJS Dashboard Demo](./assets/demo.gif)
+### Overview
+![DexterJS Overview](./assets/overview.png)
+
+### Logs with Trace Expansion
+![DexterJS Logs](./assets/logs.png)
+
+### Insights — N+1 Detection
+![DexterJS Insights](./assets/insights.png)
 
 > 📸 Demo coming soon — star the repo to get notified
 
