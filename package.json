@@ -2,6 +2,7 @@
   "name": "dexterjs",
   "version": "0.1.1",
   "private": true,
+  "license": "LGPL-3.0-or-later",
   "description": "DexterJS — Your app's secret lab. A Node.js observability library for solo developers.",
   "scripts": {
     "build": "pnpm --filter @dexter.js/dashboard build && pnpm -r --filter=!@dexter.js/dashboard build ",

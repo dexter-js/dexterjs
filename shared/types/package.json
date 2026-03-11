@@ -2,6 +2,7 @@
   "name": "@dexter.js/types",
   "version": "0.1.1",
   "private": true,
+  "license": "LGPL-3.0-or-later",
   "description": "Shared type definitions for DexterJS",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

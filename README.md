@@ -1,6 +1,6 @@
 # 🧪 DexterJS
 
-[![MIT License](https://img.shields.io/badge/license-MIT-a855f7.svg)](LICENSE)
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 [![TypeScript](https://img.shields.io/badge/typescript-strict-3b82f6.svg)](tsconfig.base.json)
 [![pnpm](https://img.shields.io/badge/pnpm-monorepo-22c55e.svg)](pnpm-workspace.yaml)
 
@@ -342,4 +342,4 @@ Please keep PRs focused and small. If you're adding a new instrumentor, look at 
 
 ## License
 
-MIT — do whatever you want with it.
+LGPL-3.0-or-later — see `LICENSE` for the full text and `LICENSE_FAQ.md` for a plain English summary.

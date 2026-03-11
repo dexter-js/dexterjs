@@ -1,6 +1,7 @@
 {
   "name": "@dexter.js/sidecar",
   "version": "0.1.1",
+  "license": "LGPL-3.0-or-later",
   "description": "DexterJS Sidecar — local observability dashboard and aggregator",
   "publishConfig": {
     "access": "public"

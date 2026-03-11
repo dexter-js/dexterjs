@@ -1,6 +1,7 @@
 {
   "name": "@dexter.js/monitor",
   "version": "0.1.1",
+  "license": "LGPL-3.0-or-later",
   "description": "DexterJS Monitor — auto-instrument your Node.js app with tracing, metrics, and insights",
   "publishConfig": {
     "access": "public"
