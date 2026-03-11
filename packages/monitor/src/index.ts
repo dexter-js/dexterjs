@@ -11,6 +11,7 @@ export { instrumentMongoose } from "./instrumentors/mongoose";
 export { instrumentRedis } from "./instrumentors/redis";
 export { instrumentHttp } from "./instrumentors/http";
 export { instrumentPrisma } from "./instrumentors/prisma";
+export { instrumentDrizzle } from "./instrumentors/drizzle";
 export { dexterDrizzleLogger, DexterDrizzleLogger } from "./instrumentors/drizzle";
 
 // Re-export shared types for consumer convenience.

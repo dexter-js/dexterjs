@@ -1,6 +1,6 @@
 {
   "name": "@dexter.js/sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "LGPL-3.0-or-later",
   "description": "DexterJS SDK — meta package that re-exports @dexter.js/logger and @dexter.js/monitor",
   "publishConfig": {
